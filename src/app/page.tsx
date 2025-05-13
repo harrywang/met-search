@@ -7,18 +7,36 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { XIcon, GithubIcon } from "lucide-react";
+import Image from "next/image";
+
+interface Artwork {
+  objectID: number;
+  title: string;
+  artistDisplayName: string;
+  primaryImageSmall?: string;
+  primaryImage?: string;
+  objectDate?: string;
+  medium?: string;
+  department?: string;
+  culture?: string;
+  objectName?: string;
+  creditLine?: string;
+  repository?: string;
+  objectURL?: string;
+  description?: string;
+}
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [selected, setSelected] = useState<any | null>(null);
+  const [selected, setSelected] = useState<Artwork | null>(null);
   const dialogContentRef = useRef<HTMLDivElement | null>(null);
   const [objectIDs, setObjectIDs] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
-  const [filteredResults, setFilteredResults] = useState<any[]>([]);
+  const [filteredResults, setFilteredResults] = useState<Artwork[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const maxResults = 120;
@@ -29,7 +47,7 @@ export default function Home() {
     }
   }, [selected]);
 
-  async function fetchWithImagesBatch(ids: number[], already: any[] = [], needed: number) {
+  async function fetchWithImagesBatch(ids: number[], already: Artwork[] = [], needed: number) {
     let filtered = [...already];
     let i = 0;
     const batchSize = 9;
@@ -39,7 +57,7 @@ export default function Home() {
           fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`).then((r) => r.json())
         )
       );
-      filtered = filtered.concat(batch.filter((item) => item.primaryImageSmall || item.primaryImage));
+      filtered = filtered.concat(batch.filter((item: Artwork) => item.primaryImageSmall || item.primaryImage));
       i += batchSize;
     }
     return { filtered, nextIndex: i };
@@ -83,14 +101,14 @@ export default function Home() {
                 fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`).then((r) => r.json())
               )
             );
-            moreFiltered = moreFiltered.concat(batch.filter((item) => item.primaryImageSmall || item.primaryImage));
+            moreFiltered = moreFiltered.concat(batch.filter((item: Artwork) => item.primaryImageSmall || item.primaryImage));
             setFilteredResults([...moreFiltered]);
             i += 9;
           }
           setIsFetchingMore(false);
         })();
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch results. Please try again.");
       setLoading(false);
     }
@@ -113,7 +131,7 @@ export default function Home() {
     } else {
       setResults(filteredResults.slice(start, end));
     }
-  }, [currentPage]);
+  }, [currentPage, filteredResults, objectIDs, isFetchingMore]);
 
   const totalPages = Math.ceil(filteredResults.length / pageSize);
 
@@ -192,12 +210,19 @@ export default function Home() {
                     <CardDescription className="truncate" title={item.artistDisplayName}>{item.artistDisplayName}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <img
-                      src={item.primaryImageSmall || item.primaryImage}
-                      alt={item.title}
-                      className="w-full h-48 object-cover rounded-md border"
-                      loading="lazy"
-                    />
+                    {item.primaryImageSmall || item.primaryImage ? (
+                      <Image
+                        src={item.primaryImageSmall || item.primaryImage || "/placeholder.png"}
+                        alt={item.title}
+                        width={400}
+                        height={300}
+                        className="w-full h-48 object-cover rounded-md border"
+                        style={{ objectFit: "cover" }}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Skeleton className="w-full h-48" />
+                    )}
                     <div className="mt-2 text-xs text-muted-foreground truncate" title={item.objectDate}>{item.objectDate}</div>
                   </CardContent>
                 </Card>
@@ -239,12 +264,19 @@ export default function Home() {
               <DialogDescription>{selected.artistDisplayName}</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center gap-4">
-              <img
-                src={selected.primaryImage || selected.primaryImageSmall}
-                alt={selected.title}
-                className="w-full max-h-96 object-contain rounded-md border"
-                loading="lazy"
-              />
+              {selected.primaryImage || selected.primaryImageSmall ? (
+                <Image
+                  src={selected.primaryImage || selected.primaryImageSmall || "/placeholder.png"}
+                  alt={selected.title}
+                  width={600}
+                  height={450}
+                  className="w-full max-h-96 object-contain rounded-md border"
+                  style={{ objectFit: "contain" }}
+                  loading="lazy"
+                />
+              ) : (
+                <Skeleton className="w-full h-48" />
+              )}
               <div className="w-full text-sm">
                 <div><strong>Date:</strong> {selected.objectDate}</div>
                 {selected.medium && <div><strong>Medium:</strong> {selected.medium}</div>}
