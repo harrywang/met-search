@@ -1835,6 +1835,54 @@ Let me update your code accordingly!
 
 ---
 
+```diff
+          )}
+        </Dialog>
+-       <footer className="w-full flex flex-col items-center justify-center mt-16 mb-4 text-xs text-muted-foreground gap-2">
++       <footer className="w-full flex flex-row items-center justify-center mt-16 mb-4 text-xs text-muted-foreground gap-2">
+          <a href="https://github.com/harrywang/met-search" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            <GithubIcon className="w-5 h-5" />
+```
+
+---
+
+The footer now displays the GitHub icon and the "Made by Harry Wang" text on the same line, horizontally aligned and spaced for a clean, professional look.
+
+If you want to further adjust the spacing, size, or add more links, just let me know!
+
+---
+
+_**User**_
+
+updated the readme
+
+---
+
+_**Assistant**_
+
+Great! Updating the README is an important step to help others (and your future self) understand how to use and contribute to your project.
+
+If you’d like, I can help you:
+- Review your updated README for clarity and completeness.
+- Suggest improvements or formatting.
+- Add usage instructions, screenshots, or contribution guidelines.
+
+Just let me know if you want to share your updated README or need help with anything specific!
+
+---
+
+_**User**_
+
+update the readme with the project information, description, api url, etc.
+
+---
+
+_**Assistant**_
+
+Read file: README.md
+
+---
+
 
 
 ---
