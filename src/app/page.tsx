@@ -137,11 +137,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start py-16 px-4 bg-background">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Metropolitan Museum of Art Collection</h1>
+      {/* Met logo above the title */}
+      <div className="mb-6 flex justify-center">
+        <Image src="/met-logo.svg" alt="The Met logo" width={80} height={80} priority />
+      </div>
+      <h3 className="text-xl sm:text-2xl font-bold mb-8 text-center">Metropolitan Museum of Art</h3>
       <form onSubmit={handleSearch} className="w-full max-w-xl flex gap-2 mb-4 relative">
         <div className="relative flex-1">
           <Input
-            placeholder="Search the Met Museum Collection..."
+            placeholder="Search the Met Collection..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pr-10"
@@ -239,22 +243,24 @@ export default function Home() {
         </div>
         {/* Pagination Controls */}
         {filteredResults.length > pageSize && (
-          <div className="flex justify-center items-center gap-4 mt-8">
-            <Button variant="outline" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
-              First
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>
-              Previous
-            </Button>
-            <span className="text-sm">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button variant="outline" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
-              Next
-            </Button>
-            <Button variant="outline" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-              Last
-            </Button>
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-2 sm:gap-4 mt-8">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+                First
+              </Button>
+              <Button variant="outline" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                Previous
+              </Button>
+            </div>
+            <span className="text-sm min-w-[80px] text-center my-2 sm:my-0">Page {currentPage} of {totalPages}</span>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                Next
+              </Button>
+              <Button variant="outline" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+                Last
+              </Button>
+            </div>
           </div>
         )}
         {selected && (
